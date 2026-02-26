@@ -3,12 +3,14 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
-        boolean state = true;
-        while (state) {
+        while (true) {
             System.out.print("$ ");
             String command = scanner.nextLine();
-            if (command.equals("exit")) {
-                state = false;
+            if (command.startsWith("echo ")) {
+                System.out.println(command.replaceFirst("echo ", ""));
+            }
+            else if (command.equals("exit")) {
+                break;
             } else {
                 System.out.println(String.format("%s: command not found", command));
             }
