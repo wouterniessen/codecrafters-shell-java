@@ -114,7 +114,7 @@ class Pwd implements Command {
                 .toAbsolutePath()
                 .toString();
         } else {
-            String userDirectory = currentDirectory.get();
+            String userDirectory = currentDirectory.get().toString();
         }
         System.out.println(userDirectory);
     }
