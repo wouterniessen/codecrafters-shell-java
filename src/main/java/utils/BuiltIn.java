@@ -81,7 +81,7 @@ class Type implements Command {
                     .filter(p -> p.getFileName().toString().equals(name) && Files.isExecutable(p))
                     .findFirst();
                 if (result.isPresent()) {
-                    System.out.println(String.format("%s is %s", name, result));
+                    System.out.println(String.format("%s is %s", name, result.get()));
                     found = true;
                     break;
                 };
