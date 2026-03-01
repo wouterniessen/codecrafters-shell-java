@@ -108,7 +108,7 @@ class Type implements Command {
 
 class Pwd implements Command {
     public void execute(String[] args) {
-        Optional<Path> currentDirectory = getCurrentDirectory();
+        Optional<Path> currentDirectory = BuiltIn.getCurrentDirectory();
         if (!currentDirectory.isPresent()) {
             String userDirectory = Paths.get("")
                 .toAbsolutePath()
@@ -131,7 +131,7 @@ class Cd implements Command {
         Path dirPath = Path.get(dir);
         if (dir.startsWith("/")) {
             if (Files.exists(dirPath)) 
-                setCurrentDirectory(dirPath);
+                BuiltIn.setCurrentDirectory(dirPath);
         }
         
         if (dir.startsWith("./")) {
