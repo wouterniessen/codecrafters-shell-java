@@ -14,12 +14,14 @@ import java.io.IOException;
 
 public class BuiltIn {
     private static final Map<String, Command> commands = new HashMap<>();
+    private Optional<Path> currentDirectory = Optional.empty();
 
     static {
         commands.put("exit", new Exit());
         commands.put("echo", new Echo());
         commands.put("type", new Type());
         commands.put("pwd", new Pwd());
+        commands.put("cd", new Cd());
     }
 
     public static Command get(String name) {
@@ -50,6 +52,14 @@ public class BuiltIn {
             }   
         }
         return Optional.empty();
+    }
+
+    public Optional<Path> getCurrentDirectory() {
+        return this.currentDirectory;
+    }
+
+    public void setCurrentDirectory(Path newDirectory) {
+        this.currentDirectory = Optional.of(newDirectory);
     }
 }
 
@@ -98,13 +108,42 @@ class Type implements Command {
 
 class Pwd implements Command {
     public void execute(String[] args) {
-        String userDirectory = Paths.get("")
-            .toAbsolutePath()
-            .toString();
+        Optional<Path> currentDirectory = getCurrentDirectory();
+        if (!currentDirectory.isPresent()) {
+            String userDirectory = Paths.get("")
+                .toAbsolutePath()
+                .toString();
+        } else {
+            String userDirectory = currentDirectory.get();
+        }
         System.out.println(userDirectory);
     }
 }
 
+class Cd implements Command {
+    public void execute(String[] args) {
+        if (args.length > 2) {
+            System.out.println(String.format("To many arguments for: %s", String.join(" ", args)));
+            return;
+        }
 
+        String dir = args[1];
+        Path dirPath = Path.get(dir);
+        if (dir.startsWith("/")) {
+            if (Files.exists(dirPath)) 
+                setCurrentDirectory(dirPath);
+        }
+        
+        if (dir.startsWith("./")) {
 
+        }
+        if (dir.startsWith("../")) {
 
+        } 
+        if (dir.startsWith("~")) {
+
+        } else {
+            System.out.println(String.format("cd: %s: No such file or directory", dir));
+        }
+    }
+}
