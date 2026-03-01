@@ -1,5 +1,8 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import utils.BuiltIn;
@@ -33,8 +36,11 @@ public class Main {
 
             Optional<Path> commandPath = BuiltIn.searchCommand(command);
             if (commandPath.isPresent()) {
+                List<String> commandAndPath = new ArrayList<>();
+                commandAndPath.add(commandPath.get().toString());
+                commandAndPath.addAll(Arrays.asList(sinput).subList(1, sinput.length));
                 try {
-                    ProcessBuilder pb = new ProcessBuilder(sinput);
+                    ProcessBuilder pb = new ProcessBuilder(commandAndPath);
                     pb.inheritIO();
                     pb.start().waitFor();
                 }   catch (IOException e) {
