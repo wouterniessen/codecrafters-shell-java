@@ -19,6 +19,7 @@ public class BuiltIn {
         commands.put("exit", new Exit());
         commands.put("echo", new Echo());
         commands.put("type", new Type());
+        commands.put("pwd", new Pwd());
     }
 
     public static Command get(String name) {
@@ -92,6 +93,15 @@ class Type implements Command {
                 e.printStackTrace();
             }
         }
+    }
+}
+
+class Pwd implements Command {
+    public void execute(String[] args) {
+        String userDirectory = Paths.get("")
+            .toAbsolutePath()
+            .toString();
+        System.out.println(userDirectory);
     }
 }
 
