@@ -32,20 +32,22 @@ public class BuiltIn {
         String commandPaths = System.getenv("PATH");
         String[] paths = commandPaths.split(File.pathSeparator);
 
-        Optional<Path> result = Optional.empty();
         for (String path : paths) {
             Path dir = Paths.get(path);
             if (!Files.exists(dir)) {
                 continue;
             }
             try (Stream<Path> stream = Files.list(dir)){
-                result = stream
+                Optional<Path> result = stream
                     .filter(p -> p.getFileName().toString().equals(name) 
                             && Files.isExecutable(p))
                     .findFirst();
+                if (result.isPresent()) {
+                    return result;
+                }
             }   
         }
-        return result;
+        return Optional.empty();
     }
 }
 
