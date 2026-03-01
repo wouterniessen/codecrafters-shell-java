@@ -131,9 +131,10 @@ class Cd implements Command {
         String dir = args[1];
         Path dirPath = Paths.get(dir);
         if (dir.startsWith("/")) {
-            if (Files.exists(dirPath)) 
+            if (Files.exists(dirPath)) {
                 BuiltIn.setCurrentDirectory(dirPath);
-            return;
+                return;
+            }
         }
         
         if (dir.startsWith("./")) {
