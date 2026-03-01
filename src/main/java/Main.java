@@ -40,7 +40,7 @@ public class Main {
                 commandAndPath.add(commandPath.get().toString());
                 commandAndPath.addAll(Arrays.asList(sinput).subList(1, sinput.length));
                 try {
-                    ProcessBuilder pb = new ProcessBuilder(commandAndPath);
+                    ProcessBuilder pb = new ProcessBuilder(sinput);
                     pb.inheritIO();
                     pb.start().waitFor();
                 }   catch (IOException e) {
