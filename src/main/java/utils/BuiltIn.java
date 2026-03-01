@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class BuiltIn {
     private static final Map<String, Command> commands = new HashMap<>();
-    private Optional<Path> currentDirectory = Optional.empty();
+    private static Optional<Path> currentDirectory = Optional.empty();
 
     static {
         commands.put("exit", new Exit());
@@ -54,12 +54,12 @@ public class BuiltIn {
         return Optional.empty();
     }
 
-    public Optional<Path> getCurrentDirectory() {
-        return this.currentDirectory;
+    public static Optional<Path> getCurrentDirectory() {
+        return currentDirectory;
     }
 
-    public void setCurrentDirectory(Path newDirectory) {
-        this.currentDirectory = Optional.of(newDirectory);
+    public static void setCurrentDirectory(Path newDirectory) {
+        currentDirectory = Optional.of(newDirectory);
     }
 }
 
