@@ -38,7 +38,7 @@ public class BuiltIn {
             if (!Files.exists(dir)) {
                 continue;
             }
-            try (Stream<Path> stream = Files.walk(dir)){
+            try (Stream<Path> stream = Files.list(dir)){
                 result = stream
                     .filter(p -> p.getFileName().toString().equals(name) 
                             && Files.isExecutable(p))
