@@ -3,6 +3,7 @@ package utils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,6 +26,26 @@ public class BuiltIn {
 
     public boolean isCommand(String command) {
         return commands.containsKey(command);
+    }
+
+    public static Optional<Path> searchCommand(String name) throws IOException {
+        String commandPaths = System.getenv("PATH");
+        String[] paths = commandPaths.split(File.pathSeparator);
+
+        Optional<Path> result = Optional.empty();
+        for (String path : paths) {
+            Path dir = Paths.get(path);
+            if (!Files.exists(dir)) {
+                continue;
+            }
+            try (Stream<Path> stream = Files.walk(dir)){
+                result = stream
+                    .filter(p -> p.getFileName().toString().equals(name) 
+                            && Files.isExecutable(p))
+                    .findFirst();
+            }   
+        }
+        return result;
     }
 }
 
@@ -59,39 +80,18 @@ class Type implements Command {
             System.out.println(String.format("%s is a shell builtin", name));
         } else {
             try {
-                searchCommand(name);
+                Optional<Path> result = BuiltIn.searchCommand(name);
+                result.ifPresentOrElse(
+                    p -> System.out.println(String.format("%s is %s", name, p)), 
+                    () -> System.out.println(String.format("%s: not found", name))
+                );
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
-    private void searchCommand(String name) throws IOException {
-        String commandPaths = System.getenv("PATH");
-        String[] paths = commandPaths.split(File.pathSeparator);
-
-        boolean found = false;
-        for (String path : paths) {
-            Path dir = Paths.get(path);
-            if (!Files.exists(dir)) {
-                continue;
-            }
-            try {
-                Optional<Path> result = Files.walk(dir)
-                    .filter(p -> p.getFileName().toString().equals(name) && Files.isExecutable(p))
-                    .findFirst();
-                if (result.isPresent()) {
-                    System.out.println(String.format("%s is %s", name, result.get()));
-                    found = true;
-                    break;
-                };
-
-            } catch (IOException e) {
-                System.out.println(e.getStackTrace());
-            }          
-        }
-        if (!found) {
-            System.out.println(String.format("%s: not found", name));
-        }
-    } 
 }
+
+
+
+
