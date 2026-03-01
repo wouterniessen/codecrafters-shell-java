@@ -1,8 +1,12 @@
 import java.util.Scanner;
+import utils.BuiltIn;
+import utils.Command;
+
 
 public class Main {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
+
         while (true) {
             System.out.print("$ ");
             String input = scanner.nextLine();
@@ -16,13 +20,13 @@ public class Main {
                 arguments = new String[]{command};
             }
 
-            Command cmd = Commands.get(commmand);
+            Command cmd = BuiltIn.get(command);
             if (cmd != null) {
                 cmd.execute(arguments);
             } else {
                 System.out.println(String.format("%s: command not found", command));
             }
         }
-        scanner.close();
+        
     }
 }
