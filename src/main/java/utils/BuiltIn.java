@@ -127,7 +127,7 @@ class Cd implements Command {
         String dir = args[1];
         Path newPath;
         if (dir.startsWith("~")) {
-            newPath = Path.of(System.getProperty("user.home"));
+            newPath = Path.of(System.getenv("HOME"));
         } else {
             newPath = BuiltIn.getCurrentDirectory().resolve(dir).normalize();
         }
