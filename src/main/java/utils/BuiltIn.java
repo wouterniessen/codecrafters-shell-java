@@ -133,6 +133,7 @@ class Cd implements Command {
         if (dir.startsWith("/")) {
             if (Files.exists(dirPath)) 
                 BuiltIn.setCurrentDirectory(dirPath);
+            return;
         }
         
         if (dir.startsWith("./")) {
