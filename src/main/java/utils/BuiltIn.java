@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class BuiltIn {
     private static final Map<String, Command> commands = new HashMap<>();
-    private static Optional<Path> currentDirectory = Optional.empty();
+    private static Path currentDirectory = Path.of("").toAbsolutePath();
 
     static {
         commands.put("exit", new Exit());
@@ -54,12 +54,12 @@ public class BuiltIn {
         return Optional.empty();
     }
 
-    public static Optional<Path> getCurrentDirectory() {
+    public static Path getCurrentDirectory() {
         return currentDirectory;
     }
 
     public static void setCurrentDirectory(Path newDirectory) {
-        currentDirectory = Optional.of(newDirectory);
+        currentDirectory = newDirectory;
     }
 }
 
@@ -85,6 +85,7 @@ class Type implements Command {
     public void execute(String[] args) {
         if (args.length < 2) {
             System.out.println("type: missing operand");
+            return;
         }
 
         String name = args[1];
@@ -108,43 +109,31 @@ class Type implements Command {
 
 class Pwd implements Command {
     public void execute(String[] args) {
-        Optional<Path> currentDirectory = BuiltIn.getCurrentDirectory();
-        if (!currentDirectory.isPresent()) {
-            String userDirectory = Paths.get("")
-                .toAbsolutePath()
-                .toString();
-            System.out.println(userDirectory);
-        } else {
-            String userDirectory = currentDirectory.get().toString();
-            System.out.println(userDirectory);
-        }
+       System.out.println(BuiltIn.getCurrentDirectory());
     }
 }
 
 class Cd implements Command {
     public void execute(String[] args) {
+        if (args.length < 2) {
+            System.out.println("cd: missing operand");
+            return;
+        }
         if (args.length > 2) {
             System.out.println(String.format("To many arguments for: %s", String.join(" ", args)));
             return;
         }
 
         String dir = args[1];
-        Path dirPath = Paths.get(dir);
-        if (dir.startsWith("/")) {
-            if (Files.exists(dirPath)) {
-                BuiltIn.setCurrentDirectory(dirPath);
-                return;
-            }
-        }
-        
-        if (dir.startsWith("./")) {
-
-        }
-        if (dir.startsWith("../")) {
-
-        } 
+        Path newPath;
         if (dir.startsWith("~")) {
+            newPath = Path.of(System.getProperty("user.home"));
+        } else {
+            newPath = BuiltIn.getCurrentDirectory().resolve(dir).normalize();
+        }
 
+        if (Files.isDirectory(newPath)) {
+            BuiltIn.setCurrentDirectory(newPath);
         } else {
             System.out.println(String.format("cd: %s: No such file or directory", dir));
         }
