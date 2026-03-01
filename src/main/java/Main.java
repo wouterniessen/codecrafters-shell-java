@@ -35,6 +35,7 @@ public class Main {
 
 
             Optional<Path> commandPath = BuiltIn.searchCommand(command);
+            System.out.println(commandPath);
             if (commandPath.isPresent()) {
                 List<String> commandAndPath = new ArrayList<>();
                 commandAndPath.add(commandPath.get().toString());
