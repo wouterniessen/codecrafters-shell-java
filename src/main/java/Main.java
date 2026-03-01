@@ -20,12 +20,7 @@ public class Main {
             String[] sinput = input.split("\\s+");
             String command =  sinput[0];
 
-            String[] arguments;
-            if (sinput.length > 1) {
-                arguments = new String[]{command, sinput[1]};
-            } else {
-                arguments = new String[]{command};
-            }
+            String[] arguments = sinput;
 
             Command cmd = BuiltIn.get(command);
             if (cmd != null) {
@@ -36,9 +31,6 @@ public class Main {
 
             Optional<Path> commandPath = BuiltIn.searchCommand(command);
             if (commandPath.isPresent()) {
-                List<String> commandAndPath = new ArrayList<>();
-                commandAndPath.add(commandPath.get().toString());
-                commandAndPath.addAll(Arrays.asList(sinput).subList(1, sinput.length));
                 try {
                     ProcessBuilder pb = new ProcessBuilder(sinput);
                     pb.inheritIO();

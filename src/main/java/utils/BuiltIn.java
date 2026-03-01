@@ -1,5 +1,6 @@
 package utils;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -63,7 +64,7 @@ class Exit implements Command {
 class Echo implements Command {
     public void execute(String[] args) {
         if (args.length > 1)
-            System.out.println(args[1]);
+            System.out.println(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
         else 
             System.out.println("echo: missing operand");
     }
