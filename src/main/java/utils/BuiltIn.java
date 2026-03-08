@@ -2,6 +2,7 @@ package utils;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -64,31 +65,31 @@ public class BuiltIn {
 }
 
 class Exit implements Command {
-    public void execute(String[] args) {
-        if (args.length > 1)
-            System.exit(Integer.parseInt(args[1]));
+    public void execute(List<String> args) {
+        if (args.size() > 1)
+            System.exit(Integer.parseInt(args.get(1)));
         else
             System.exit(0);
     }
 }
 
 class Echo implements Command {
-    public void execute(String[] args) {
-        if (args.length > 1)
-            System.out.println(String.join(" ", Arrays.copyOfRange(args, 1, args.length)));
+    public void execute(List<String> args) {
+        if (args.size() > 1)
+            System.out.println(String.join(" ", args.subList(1, args.size())));
         else 
             System.out.println("echo: missing operand");
     }
 }
 
 class Type implements Command {
-    public void execute(String[] args) {
-        if (args.length < 2) {
+    public void execute(List<String> args) {
+        if (args.size() < 2) {
             System.out.println("type: missing operand");
             return;
         }
 
-        String name = args[1];
+        String name = args.get(1);
 
         Command cmd = BuiltIn.get(name);
         if (cmd != null) {
@@ -108,23 +109,23 @@ class Type implements Command {
 }
 
 class Pwd implements Command {
-    public void execute(String[] args) {
+    public void execute(List<String> args) {
        System.out.println(BuiltIn.getCurrentDirectory());
     }
 }
 
 class Cd implements Command {
-    public void execute(String[] args) {
-        if (args.length < 2) {
+    public void execute(List<String> args) {
+        if (args.size() < 2) {
             System.out.println("cd: missing operand");
             return;
         }
-        if (args.length > 2) {
+        if (args.size() > 2) {
             System.out.println(String.format("To many arguments for: %s", String.join(" ", args)));
             return;
         }
 
-        String dir = args[1];
+        String dir = args.get(1);
         Path newPath;
         if (dir.startsWith("~")) {
             newPath = Path.of(System.getenv("HOME"));

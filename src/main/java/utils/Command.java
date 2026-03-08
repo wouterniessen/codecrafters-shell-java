@@ -1,5 +1,7 @@
 package utils;
 
+import java.util.List;
+
 public interface Command {
-    void execute(String[] args);
+    void execute(List<String> args);
 }

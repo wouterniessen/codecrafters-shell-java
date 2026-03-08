@@ -1,9 +1,11 @@
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import utils.BuiltIn;
 import utils.Command;
+import utils.Parser;
 
 
 
@@ -11,18 +13,19 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         Scanner scanner = new Scanner(System.in);
+        Parser parser = new Parser();
 
         while (true) {
             System.out.print("$ ");
             String input = scanner.nextLine().trim();
-            String[] sinput = input.split("\\s+");
-            String command =  sinput[0];
+            List<String> sinput = Parser.parseArgs(input);
 
-            String[] arguments = sinput;
+            // String[] sinput = input.split("\\s+");
+            String command =  sinput.get(0);
 
             Command cmd = BuiltIn.get(command);
             if (cmd != null) {
-                cmd.execute(arguments);
+                cmd.execute(sinput);
                 continue;
             }
 
