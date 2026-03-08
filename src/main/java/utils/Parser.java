@@ -2,23 +2,37 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Parser {
+
     public static List<String> parseArgs(String input) {
-        List<String> arguments = new ArrayList<>();
+        List<String> args = new ArrayList<>();
+        StringBuilder current = new StringBuilder();
 
-        Pattern pattern = Pattern.compile("'([^']*)'|\\S+");
-        Matcher matcher = pattern.matcher(input);
+        boolean inSingleQuote = false;
 
-        while (matcher.find()) {
-            if (matcher.group(1) != null) {
-                arguments.add(matcher.group(1));
+        for (int i = 0; i < input.length(); i++) {
+            char c = input.charAt(i);
+
+            if (c == '\'') {
+                inSingleQuote = !inSingleQuote;
+                continue;
+            }
+
+            if (Character.isWhitespace(c) && !inSingleQuote) {
+                if (current.length() > 0) {
+                    args.add(current.toString());
+                    current.setLength(0);
+                }
             } else {
-                arguments.add(matcher.group());
+                current.append(c);
             }
         }
-        return arguments;
+
+        if (current.length() > 0) {
+            args.add(current.toString());
+        }
+
+        return args;
     }
 }
