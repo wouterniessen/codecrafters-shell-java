@@ -55,15 +55,18 @@ public class Main {
                 }
             }
 
-
             Optional<Path> commandPath = BuiltIn.searchCommand(command);
             if (commandPath.isPresent()) {
                 try {
                     ProcessBuilder pb = new ProcessBuilder(sinput);
-                    pb.inheritIO();
-                    pb.redirectOutput(output);
+                    if (filename != null) {
+                        pb.redirectOutput(Path.of(filename).toFile());
+                    } else {
+                        pb.inheritIO();
+                    }
+                    
                     pb.start().waitFor();
-                }   catch (IOException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
                     if (closeOutput) {
