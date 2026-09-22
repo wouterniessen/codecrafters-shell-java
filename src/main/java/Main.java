@@ -38,6 +38,18 @@ public class Main {
                 sinput = sinput.subList(0, index);
             } 
 
+            String errorFilename = null;
+            if (sinput.contains("2>")) {
+                int index = sinput.indexOf("2>");
+                if (index == sinput.size() - 1) {
+                    System.out.println("Error: no filename provided for error redirection");
+                    continue;
+                }
+
+                errorFilename = sinput.get(index + 1);
+                sinput = sinput.subList(0, index);
+            }
+
             String command =  sinput.get(0);
 
             Command cmd = BuiltIn.get(command);
@@ -63,9 +75,14 @@ public class Main {
                     ProcessBuilder pb = new ProcessBuilder(sinput);
                     if (filename != null) {
                         pb.redirectOutput(Path.of(filename).toFile());
-                        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                     } else {
-                        pb.inheritIO();
+                        pb.redirectOutput(ProcessBuilder.Redirect.INHERIT);
+                    }
+
+                    if (errorFilename != null) {
+                        pb.redirectError(Path.of(errorFilename).toFile());
+                    } else {
+                        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                     }
                     
                     pb.start().waitFor();
