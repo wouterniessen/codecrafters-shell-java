@@ -61,9 +61,14 @@ public class Main {
                 try {
                     ProcessBuilder pb = new ProcessBuilder(sinput);
                     pb.inheritIO();
+                    pb.redirectOutput(output);
                     pb.start().waitFor();
                 }   catch (IOException e) {
                     e.printStackTrace();
+                } finally {
+                    if (closeOutput) {
+                        output.close();
+                    }
                 }
             } else { 
                 System.out.println(String.format("%s: command not found", command));
