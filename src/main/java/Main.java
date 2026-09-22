@@ -62,6 +62,7 @@ public class Main {
                     ProcessBuilder pb = new ProcessBuilder(sinput);
                     if (filename != null) {
                         pb.redirectOutput(Path.of(filename).toFile());
+                        pb.redirectError(ProcessBuilder.Redirect.INHERIT);
                     } else {
                         pb.inheritIO();
                     }
