@@ -51,9 +51,10 @@ public class Main {
                 } finally {
                     if (closeOutput) {
                         output.close();
-                        continue;
                     }
                 }
+
+                continue;
             }
 
             Optional<Path> commandPath = BuiltIn.searchCommand(command);
