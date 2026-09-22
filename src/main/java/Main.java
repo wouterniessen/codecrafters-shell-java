@@ -16,17 +16,42 @@ public class Main {
         Parser parser = new Parser();
 
         while (true) {
+            PrintStream output = System.out;
+            boolean closeOutput = false;
+
             System.out.print("$ ");
             String input = scanner.nextLine().trim();
             List<String> sinput = Parser.parseArgs(input);
 
-            // String[] sinput = input.split("\\s+");
+            // check for output redirection
+            String filename = null;
+            if (sinput.contains(">")) {
+                int index = sinput.indexOf(">") == -1 ? sinput.indexOf("1>") : sinput.indexOf(">");
+                if (index == sinput.size() - 1) {
+                    System.out.println("Error: no filename provided for output redirection");
+                    continue;
+                }
+                filename = sinput.get(index + 1);
+                sinput = sinput.subList(0, index);
+                output = new PrintStream(filename);
+            } 
+
             String command =  sinput.get(0);
 
             Command cmd = BuiltIn.get(command);
             if (cmd != null) {
-                cmd.execute(sinput);
-                continue;
+                try { 
+                    if (filename != null) {
+                        output = new PrintStream(filename);
+                        closeOutput = true;
+                    }
+                    cmd.execute(sinput, output);
+                } finally {
+                    if (closeOutput) {
+                        output.close();
+                        continue;
+                    }
+                }
             }
 
 

@@ -3,5 +3,5 @@ package utils;
 import java.util.List;
 
 public interface Command {
-    void execute(List<String> args);
+    void execute(List<String> args, PrintStream output);
 }

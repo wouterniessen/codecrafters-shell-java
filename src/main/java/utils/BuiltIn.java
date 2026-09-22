@@ -1,6 +1,5 @@
 package utils;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -65,7 +64,7 @@ public class BuiltIn {
 }
 
 class Exit implements Command {
-    public void execute(List<String> args) {
+    public void execute(List<String> args, PrintStream output) {
         if (args.size() > 1)
             System.exit(Integer.parseInt(args.get(1)));
         else
@@ -74,18 +73,18 @@ class Exit implements Command {
 }
 
 class Echo implements Command {
-    public void execute(List<String> args) {
+    public void execute(List<String> args, PrintStream output) {
         if (args.size() > 1)
-            System.out.println(String.join(" ", args.subList(1, args.size())));
+            output.println(String.join(" ", args.subList(1, args.size())));
         else 
-            System.out.println("echo: missing operand");
+            output.println("echo: missing operand");
     }
 }
 
 class Type implements Command {
-    public void execute(List<String> args) {
+    public void execute(List<String> args, PrintStream output) {
         if (args.size() < 2) {
-            System.out.println("type: missing operand");
+            output.println("type: missing operand");
             return;
         }
 
@@ -93,13 +92,13 @@ class Type implements Command {
 
         Command cmd = BuiltIn.get(name);
         if (cmd != null) {
-            System.out.println(String.format("%s is a shell builtin", name));
+            output.println(String.format("%s is a shell builtin", name));
         } else {
             try {
                 Optional<Path> result = BuiltIn.searchCommand(name);
                 result.ifPresentOrElse(
-                    p -> System.out.println(String.format("%s is %s", name, p)), 
-                    () -> System.out.println(String.format("%s: not found", name))
+                    p -> output.println(String.format("%s is %s", name, p)), 
+                    () -> output.println(String.format("%s: not found", name))
                 );
             } catch (IOException e) {
                 e.printStackTrace();
@@ -109,19 +108,19 @@ class Type implements Command {
 }
 
 class Pwd implements Command {
-    public void execute(List<String> args) {
-       System.out.println(BuiltIn.getCurrentDirectory());
+    public void execute(List<String> args, PrintStream output) {
+       output.println(BuiltIn.getCurrentDirectory());
     }
 }
 
 class Cd implements Command {
-    public void execute(List<String> args) {
+    public void execute(List<String> args, PrintStream output) {
         if (args.size() < 2) {
-            System.out.println("cd: missing operand");
+            output.println("cd: missing operand");
             return;
         }
         if (args.size() > 2) {
-            System.out.println(String.format("To many arguments for: %s", String.join(" ", args)));
+            output.println(String.format("To many arguments for: %s", String.join(" ", args)));
             return;
         }
 
@@ -136,7 +135,7 @@ class Cd implements Command {
         if (Files.isDirectory(newPath)) {
             BuiltIn.setCurrentDirectory(newPath);
         } else {
-            System.out.println(String.format("cd: %s: No such file or directory", dir));
+            output.println(String.format("cd: %s: No such file or directory", dir));
         }
     }
 }
